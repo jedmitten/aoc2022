@@ -26,8 +26,8 @@ I_PLAY = {
 def read_input(filepath: str) -> List[Tuple[str, str]]:
     """Read input file and return a list of something"""
     filepath = Path(filepath)  # type: Path
-    if filepath.exists:
-        raise ValueError(f"The path {filepath.expanduser} could not be found")
+    if not filepath.exists:
+        raise ValueError(f"The path {filepath.expanduser().absolute()} could not be found")
     with open(filepath) as f:
         lines = f.readlines()
     return lines
@@ -68,7 +68,7 @@ def parse(lines: List[str]) -> Tuple[str, str]:
         yield THEY_PLAY[they_play], I_PLAY[i_play]
         
         
-def solve(lines: List[str]) -> int:
+def solve_pt1(lines: List[str]) -> int:
     """Read input, parse, calculate score"""
     plays = list(parse(lines))
     total_score = 0

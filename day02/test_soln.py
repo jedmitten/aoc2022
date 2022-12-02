@@ -41,5 +41,5 @@ def test_score(sample_input):
 
 def test_solve(sample_input):
     expected_score = 15
-    assert soln.solve(sample_input) == expected_score
+    assert soln.solve_pt1(sample_input) == expected_score
     

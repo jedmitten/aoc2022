@@ -1,23 +1,16 @@
+from pathlib import Path
 import click
 
-from solution import elves_from_strs, most_calories_carried, calores_sorted
+from solution import read_input, parse, solve_pt1
 
 
 @click.command()
-@click.option("-i", "--infile", type=click.Path(exists=True), help="The file containing input for this day")
+@click.option("-i", "--infile", default=Path("./day02/input.txt"), type=click.Path(exists=True), help="The file containing input for this day")
 def main(infile):
     # read input
-    with open(infile) as f:
-        lines = f.readlines()
-        
-    # process input
-    elves = elves_from_strs(lines)
-    # find the elf carrying the most calories
-    most_cals = most_calories_carried(elves=elves)
-    print(f"The elf carrying the most is {most_cals}")
-    top_3 = calores_sorted(elves=elves)[:3]
-    assert len(top_3) == 3
-    print(f"Part 2 answer: {sum(top_3)}")
+    lines = read_input(infile)
+    answer_pt1 = solve_pt1(lines=lines)
+    print(f"Part 1 answer: {answer_pt1}")
 
 
 if __name__ == "__main__":
