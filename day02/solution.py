@@ -1,24 +1,29 @@
-from attrs import define
-from itertools import chain
+# AOC 2022 Day 2
+from typing import List, Tuple
 from pathlib import Path
-from typing import Any, List, Optional
+
+ROCK = 1
+PAPER = 2
+SCISSORS = 3
+
+WIN = 6
+LOSE = 0
+DRAW = 3
+
+THEY_PLAY = {
+    "A": ROCK,
+    "B": PAPER,
+    "C": SCISSORS,
+}
+
+I_PLAY = {
+    "X": ROCK,
+    "Y": PAPER,
+    "Z": SCISSORS,
+}
 
 
-@define
-class Food:
-    calories: int
-
-
-@define
-class Elf:
-    food: Optional[List[Food]]
-
-    @property
-    def total_calories(self):
-        return sum([f.calories for f in self.food])
-
-
-def read_input(filepath: str) -> List[Any]:
+def read_input(filepath: str) -> List[Tuple[str, str]]:
     """Read input file and return a list of something"""
     filepath = Path(filepath)  # type: Path
     if filepath.exists:
@@ -28,30 +33,46 @@ def read_input(filepath: str) -> List[Any]:
     return lines
 
 
-def elves_from_strs(strs: List[str]) -> List[Elf]:
-    elves = []
-    # Iterate list of calories looking for empty string as indicator of new elf food
-    elf = Elf(food=[])
-    for v in strs:
-        if not v or v == "\n":
-            elves.append(elf)
-            elf = Elf(food=[])
-            continue
-        try:
-            elf.food.append(Food(calories=int(v)))
-        except ValueError:
-            raise ValueError(f'Could not convert "{v}" to an int')
-    # account for final elf created from invals
-    elves.append(elf)
-    return elves
+def score(they_play: int, i_play: int) -> int:
+    """Return an int for win/lose/draw as defined. Return based on play1.
+    i.e., if play1 wins, this will be WIN
+    """
+    if i_play == ROCK:
+        if they_play == ROCK:
+            score =  DRAW
+        elif they_play == PAPER:
+            score =  LOSE
+        elif they_play == SCISSORS:
+            score =  WIN
+    elif i_play == PAPER:
+        if they_play == ROCK:
+            score =  WIN
+        elif they_play == PAPER:
+            score =  DRAW
+        elif they_play == SCISSORS:
+            score =  LOSE
+    elif i_play == SCISSORS:
+        if they_play == ROCK:
+            score =  LOSE
+        elif they_play == PAPER:
+            score =  WIN
+        elif they_play == SCISSORS:
+            score =  DRAW
+    return score + i_play
+        
 
-
-def calores_sorted(elves: List[Elf]) -> List[int]:
-    """Provide a sorted list of total calories carried by all elves"""
-    return  sorted([e.total_calories for e in elves], reverse=True)
-
-
-def most_calories_carried(elves: List[Elf]) -> int:
-    """Get the index of the elf carrying the most calories"""
-    highest = max([e.total_calories for e in elves])
-    return highest
+def parse(lines: List[str]) -> Tuple[str, str]:
+    """Parse input lines"""
+    for line in lines:
+        they_play, i_play = line.strip().split(" ")
+        yield THEY_PLAY[they_play], I_PLAY[i_play]
+        
+        
+def solve(lines: List[str]) -> int:
+    """Read input, parse, calculate score"""
+    plays = list(parse(lines))
+    total_score = 0
+    for play1, play2 in plays:
+        total_score += score(they_play=play1, i_play=play2)
+    return total_score
+    

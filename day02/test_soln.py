@@ -1,51 +1,45 @@
 from pathlib import Path
 from typing import List
 from pytest import fixture
-# from click.testing import CliRunner
 
-from .solution import elves_from_strs, most_calories_carried
+from . import solution as soln
 
 
 @fixture
 def sample_input() -> List[int]:
-    path = Path("./aoc2022/day01/test_input.txt").absolute()
+    path = Path("./day02/test_input.txt").absolute()
     try:
         with open(path) as f:
             return f.readlines()
     except FileNotFoundError as e:
         raise FileNotFoundError(e, "full_path: ", str(path))
-
-
-def test_solution(sample_input):
-    elves = elves_from_strs(sample_input)
     
+    
+def test_parse(sample_input):
     expected = [
-        [1000, 2000, 3000],
-        [4000],
-        [5000, 6000],
-        [7000, 8000, 9000],
-        [10000],
+        (soln.THEY_PLAY["A"], soln.I_PLAY["Y"]),
+        (soln.THEY_PLAY["B"], soln.I_PLAY["X"]),
+        (soln.THEY_PLAY["C"], soln.I_PLAY["Z"]),
     ]
+    found = list(soln.parse(sample_input))
+    assert found == expected
     
-    assert len(elves) == len(expected)
     
-    for i in range(len(elves)):
-        elf_food = [f.calories for f in elves[i].food]
-        assert values_as_expected(elf_food, expected[i])
-        assert elves[i].total_calories == sum(expected[i])
+def test_score(sample_input):
+    expected = 8
+    found = soln.score(they_play=soln.ROCK, i_play=soln.PAPER)
+    assert expected == found
     
-    assert most_calories_carried(elves=elves) == 24000
+    expected = 1
+    found = soln.score(they_play=soln.PAPER, i_play=soln.ROCK)
+    assert found == expected
+    
+    expected = 6
+    found = soln.score(they_play=soln.SCISSORS, i_play=soln.SCISSORS)
+    assert found == expected
 
 
-def values_as_expected(vals: List[int], expected: List[int]) -> bool:
-    """Check that each step of the validation is true"""
-    valid = True
-    if len(vals) != len(expected):
-        valid = False
-    for v in vals:
-        if v not in expected:
-            valid = False
-    if sum(vals) != sum(expected):
-        valid = False
-    return valid
+def test_solve(sample_input):
+    expected_score = 15
+    assert soln.solve(sample_input) == expected_score
     
