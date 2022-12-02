@@ -1,7 +1,7 @@
 from pathlib import Path
 import click
 
-from solution import read_input, parse, solve_pt1
+from solution import read_input, parse_pt1, solve_pt1
 
 
 @click.command()
