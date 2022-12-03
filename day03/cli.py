@@ -1,7 +1,7 @@
 from pathlib import Path
 import click
 
-from solution import read_input, solve_pt1#, solve_pt2
+from solution import read_input, solve_pt1, solve_pt2
 
 
 @click.command()
@@ -11,8 +11,8 @@ def main(infile):
     lines = read_input(infile)
     answer_pt1 = solve_pt1(lines=lines)
     print(f"Part 1 answer: {answer_pt1}")
-    # answer_pt2 = solve_pt2(lines=lines)
-    # print(f"Part 2 answer: {answer_pt2}")
+    answer_pt2 = solve_pt2(lines=lines)
+    print(f"Part 2 answer: {answer_pt2}")
 
 
 if __name__ == "__main__":

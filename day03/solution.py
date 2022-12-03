@@ -12,7 +12,25 @@ def read_input(filepath: str) -> List[Tuple[str, str]]:
         )
     with open(filepath) as f:
         lines = f.readlines()
-    return lines
+    return [l.strip() for l in lines]
+
+
+def make_groups_of_three(lines: List[str]) -> List[List[str]]:
+    """Split the file in groups of 3 consecutive lines"""
+    idx = 0
+    while idx < len(lines):
+        yield lines[idx:idx+3]
+        idx += 3
+        
+        
+def find_group_badge(group: List[str]) -> str:
+    """Given a group of 3 lines find the character shared among those lines"""
+    for c in list(group[0]):
+        if c not in group[1]:
+            continue
+        if c not in group[2]:
+            continue
+        return c
 
 
 def is_upper(c: str) -> bool:
@@ -66,3 +84,10 @@ def solve_pt1(lines: List[str]) -> int:
         found = find_shared(*split_string(lines[i]))
         shared.append(found)
     return sum([priority(c) for c in shared])
+        
+        
+def solve_pt2(lines: List[str]) -> int:
+    """Read input, parse, calculate score"""
+    groups = make_groups_of_three(lines)
+    badges = [find_group_badge(g) for g in groups]
+    return sum([priority(b) for b in badges])
