@@ -10,16 +10,28 @@ EMPTY_LIST_FIELD = field(default_factory=lambda: [])
 @dataclass
 class Stack:
     containers: List[str] = EMPTY_LIST_FIELD
-    
+
     def __len__(self) -> int:
         return len(self.containers)
 
     def add(self, v: str) -> None:
         self.containers.append(v)
 
+    def add_bulk(self, vals: List[str]) -> None:
+        if not isinstance(vals, list):
+            vals = [vals]
+        self.containers = self.containers + vals
+
     def remove(self) -> str:
         return self.containers.pop()
-    
+
+    def remove_bulk(self, n: int) -> str:
+        """Move more than one in the order they were stacked"""
+        grabbed = [self.remove() for i in range(n)]
+        # reverse to preserve order
+        grabbed.reverse()
+        return grabbed
+
     def top(self) -> str:
         """Return the last-in value"""
         return self.containers[-1]
@@ -28,7 +40,7 @@ class Stack:
 @dataclass
 class Warehouse:
     stacks: List[Stack] = EMPTY_LIST_FIELD
-    
+
     def __len__(self) -> int:
         return len(self.stacks)
 
@@ -75,7 +87,7 @@ class Warehouse:
                 stack = Stack()
             else:
                 stack = self.stacks[j]
-            part = line[i:i + grab_len]
+            part = line[i : i + grab_len]
             # replace all non-character possibilities
             char = part.strip().replace("[", "").replace("]", "")
             # if empty, then don't add anything to stack
@@ -92,27 +104,34 @@ class Warehouse:
             # move up one from the stack number line
             idx -= 1
             self._build_row(self.lines[idx])
-            
-    def execute_moves(self, instructions: List[str]) -> None:
+
+    def execute_moves(self, instructions: List[str], bulk: bool = False) -> None:
         """Rearrange stacks based on input
-        
+
         move 2 from 1 to 2 means "move 2 containers from stack 1 to stack 2"
         """
         for inst in instructions:
             _, count, _, _from, _, _to = inst.split(" ")
+            count = int(count)
             _from = int(_from) - 1  # adjust for 0-index
             _to = int(_to) - 1  # adjust for 0-index
-            self.move_n_from_to(n=int(count), _from=_from, _to=_to)
+            self.move_n_from_to(n=count, _from=_from, _to=_to, bulk=bulk)
 
-    def move_from_to(self, _from, _to) -> None:
+    def move_from_to(self, n: int, _from: int, _to: int, bulk: bool = False) -> None:
         """1-based index of stacks"""
-        container = self.stacks[_from].remove()
-        self.stacks[_to].add(container)
+        if bulk:
+            containers = self.stacks[_from].remove_bulk(n)
+        else:
+            containers = self.stacks[_from].remove()
+        self.stacks[_to].add_bulk(containers)
 
-    def move_n_from_to(self, n, _from, _to) -> None:
-        for i in range(n):
-            self.move_from_to(_from, _to)
-            
+    def move_n_from_to(self, n: int, _from: int, _to: int, bulk: bool = False) -> None:
+        if bulk:
+            self.move_from_to(n=n, _from=_from, _to=_to, bulk=bulk)
+        else:
+            for i in range(n):
+                self.move_from_to(n=1, _from=_from, _to=_to)
+
     def top(self) -> str:
         return "".join([s.top() for s in self.stacks])
 
@@ -137,7 +156,7 @@ def parse(lines: List[str]) -> Tuple[Warehouse, List[str]]:
             break
         i += 1
     initialization = "".join(lines[:i])
-    instruction = [l.strip() for l in lines[i + 1:]]
+    instruction = [l.strip() for l in lines[i + 1 :]]
     wh = Warehouse()
     wh._initialize(initialization=initialization)
     return wh, instruction
@@ -153,4 +172,9 @@ def solve_pt1(lines: List[str]) -> str:
 
 
 def solve_pt2(lines: List[str]) -> int:
-    return ""
+    # 1. initialize from input
+    warehouse, instr = parse(lines)
+    # 2. execute the instructions
+    warehouse.execute_moves(instr, bulk=True)
+    # 3. Which container is at the top of each stack
+    return warehouse.top()

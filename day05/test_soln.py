@@ -13,16 +13,16 @@ def sample_input() -> List[int]:
             return [l for l in f.readlines()]
     except FileNotFoundError as e:
         raise FileNotFoundError(e, "full_path: ", str(path))
-    
-    
+
+
 def test_stack():
     stack = soln.Stack()
-    stack.add('a')
-    assert stack.containers == ['a']
+    stack.add("a")
+    assert stack.containers == ["a"]
     stack.remove()
     assert stack.containers == []
-    
-    
+
+
 def test_warehouse():
     tstr = """    [D]    
 [N] [C]    
@@ -35,8 +35,8 @@ def test_warehouse():
     assert len(wh.stacks[0]) == 2
     assert len(wh.stacks[1]) == 3
     assert len(wh.stacks[2]) == 1
-    
-    
+
+
 def test_parse(sample_input):
     expected = """    [D]    
 [N] [C]    
@@ -50,9 +50,15 @@ def test_parse(sample_input):
     assert len(found_init.stacks[1]) == 3
     assert len(found_init.stacks[2]) == 1
     assert len(found_instr) == 4
-    
-    
+
+
 def test_solve_pt1(sample_input):
     found = soln.solve_pt1(sample_input)
     expected = "CMZ"
+    assert found == expected
+
+
+def test_solve_pt2(sample_input):
+    found = soln.solve_pt2(sample_input)
+    expected = "MCD"
     assert found == expected
