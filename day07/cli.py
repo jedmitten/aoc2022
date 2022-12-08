@@ -5,7 +5,13 @@ from solution import read_input, solve_pt1, solve_pt2
 
 
 @click.command()
-@click.option("-i", "--infile", default=Path("./day06/input.txt"), type=click.Path(exists=True), help="The file containing input for this day")
+@click.option(
+    "-i",
+    "--infile",
+    default=Path("./day07/input.txt"),
+    type=click.Path(exists=True),
+    help="The file containing input for this day",
+)
 def main(infile):
     # read input
     lines = read_input(infile)
