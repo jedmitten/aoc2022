@@ -50,4 +50,8 @@ def test_parse(sample_input):
 def test_solve_pt1(sample_input):
     answer = soln.solve_pt1(sample_input)
     assert answer == 95437    
-    
+        
+
+def test_solve_pt2(sample_input):
+    answer = soln.solve_pt2(sample_input)
+    assert answer == 24933642    

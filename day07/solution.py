@@ -148,5 +148,15 @@ def solve_pt1(lines: List[str]) -> int:
     return sum([d.size for d in small_dirs])
 
 
+TOTAL_DISK_SIZE = 70000000
+UNUSED_NEED = 30000000
+
+
 def solve_pt2(lines: List[str]) -> int:
-    return ""
+    fs = parse(lines)
+    all_dirs = get_nested_dir_list(fs.root_directory)
+    disk_left = TOTAL_DISK_SIZE - fs.root_directory.size
+    target_delete = UNUSED_NEED - disk_left
+    big_enough = [d for d in all_dirs if d.size >= target_delete]
+    return min([d.size for d in big_enough])
+    
