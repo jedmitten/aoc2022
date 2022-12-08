@@ -38,8 +38,22 @@ class Map:
     def add_tree(self, x, y, val):
         self.trees[self._get_index_of(x, y)] = val
     
-    def is_visible(self, x, y):
-        pass    
+    def is_edge(self, x, y):
+        return x > 0 and x < self.max_x and y > 0 and y < self.max_y
+    
+    def get_surrounding(self, x, y):
+        """Get the trees that are
+        1. above
+        2. below
+        3. left
+        4. right
+        of current tree
+
+        Args:
+            x (_type_): _description_
+            y (_type_): _description_
+        """
+        raise NotImplementedError("This method has not yet been implemented")
 
 
 
