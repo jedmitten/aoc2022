@@ -1,4 +1,4 @@
-# AOC 2022 Day 8
+# AOC 2022 Day 8 https://adventofcode.com/2022/day/8
 import attrs
 from pathlib import Path
 from typing import List, Tuple
