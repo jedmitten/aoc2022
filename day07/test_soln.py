@@ -14,12 +14,21 @@ from . import solution as soln
 #     except FileNotFoundError as e:
 #         raise FileNotFoundError(e, "full_path: ", str(path))
 
-def test_directory_size():
-    inputs = [
-        ("a.txt", 1000),
-        ("b.txt", 150),
-        ("c.txt", 20)
+def test_file():
+    name = "a.txt"
+    size = 10
+    f = soln.File(name=name, size=size)
+    assert f.name == name
+    assert f.size == size
+    
+
+def test_directory():
+    files = [
+        soln.File("a.txt", 10),
+        soln.File("b.txt", 100)
     ]
-    d = soln.Directory
-    for i in inputs:
-        
+    d = soln.Directory()
+    for f in files:
+        d.add_child(child=f)
+    assert d.size == 110
+    
