@@ -109,6 +109,44 @@ class Map:
         from_left = self.visible_from_left(x, y)
         from_right = self.visible_from_right(x, y)
         return any([from_above, from_below, from_left, from_right])
+    
+    def viewing_score(self, x, y) -> int:
+        # how far can each tree see in all directions
+        left_score = 0
+        this_tree = self.get_tree(x, y)
+        for i in range(x - 1, -1, -1):
+            other_tree = self.get_tree(i, y)
+            if other_tree < this_tree:
+                left_score += 1
+            else:
+                left_score += 1
+                break
+        right_score = 0
+        for i in range(x + 1, self.max_x + 1, 1):
+            other_tree = self.get_tree(i, y)
+            if other_tree < this_tree:
+                right_score += 1
+            else:
+                right_score += 1
+                break
+        above_score = 0
+        for j in range(y - 1, -1, -1):
+            other_tree = self.get_tree(x, j)
+            if other_tree < this_tree:
+                above_score += 1
+            else:
+                above_score += 1
+                break
+        below_score = 0
+        for j in range(y + 1, self.max_y + 1, 1):
+            other_tree = self.get_tree(x, j)
+            if other_tree < this_tree:
+                below_score += 1
+            else:
+                below_score += 1
+                break
+            
+        return left_score * right_score * above_score * below_score
 
     @property
     def visible_trees(self) -> List[int]:
@@ -152,4 +190,10 @@ def solve_pt1(lines: List[str]) -> int:
 
 
 def solve_pt2(lines: List[str]) -> int:
-    return ""
+    map = parse(lines)
+    max = 0
+    for x in range(map.max_x + 1):
+        for y in range(map.max_y + 1):
+            if map.viewing_score(x, y) > max:
+                max = map.viewing_score(x, y)
+    return max

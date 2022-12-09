@@ -3,12 +3,11 @@ from typing import List
 from pytest import fixture
 
 from . import solution as soln
-from . import DAY_STR
 
 
 @fixture
 def sample_input() -> List[int]:
-    return soln.read_input(f"~/GitRepos/aoc2022/day{DAY_STR}/test_input.txt")
+    return soln.read_input(f"~/GitRepos/aoc2022/day{soln.DAY_STR}/test_input.txt")
 
 
 def test_map():
@@ -59,8 +58,21 @@ def test_parse(sample_input):
     assert map.is_visible(0, map.max_y) == True
     assert map.is_visible(map.max_x, map.max_y) == True
     assert map.is_visible(2, 3) == True
+    
+    assert map.viewing_score(2, 1) == 4
+    assert map.viewing_score(2, 3) == 8
 
 
 def test_solve_pt1(sample_input):
     map = soln.parse(sample_input)
     assert len(map.visible_trees) == 21
+    
+
+def test_solve_pt2(sample_input):
+    map = soln.parse(sample_input)
+    max = 0
+    for x in range(map.max_x + 1):
+        for y in range(map.max_y + 1):
+            if map.viewing_score(x, y) > max:
+                max = map.viewing_score(x, y)
+    assert max == 8
