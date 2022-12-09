@@ -1,8 +1,12 @@
 from pathlib import Path
+import logging
 import click
 
-from solution import read_input, solve_pt1, solve_pt2
-from . import DAY_STR
+
+logging.basicConfig()
+LOG = logging.getLogger(__name__)
+
+from solution import read_input, solve_pt1, solve_pt2, DAY_STR
 
 
 @click.command()
@@ -15,6 +19,7 @@ from . import DAY_STR
 )
 def main(infile):
     # read input
+    LOG.info(f"reading {infile}")
     lines = read_input(infile)
     answer_pt1 = solve_pt1(lines=lines)
     print(f"Part 1 answer: {answer_pt1}")
