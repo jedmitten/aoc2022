@@ -14,6 +14,10 @@ P3 = (1, 1)
 def sample_input() -> List[int]:
     return soln.read_input(f"~/GitRepos/aoc2022/day{soln.DAY_STR}/test_input.txt")
 
+@fixture
+def sample_input2() -> List[int]:
+    return soln.read_input(f"~/GitRepos/aoc2022/day{soln.DAY_STR}/test_input_2.txt")
+
 
 def test_distance():
     assert soln.distance(P1, P2) == 1
@@ -48,3 +52,11 @@ def test_parse(sample_input):
 
 def test_solve_pt1(sample_input):
     assert soln.solve_pt1(sample_input) == 13
+    
+
+def test_solve_pt2(sample_input):
+    assert soln.solve_pt2(sample_input) == 1
+    
+
+def test_solve_pt2_2(sample_input2):
+    assert soln.solve_pt2(sample_input2) == 36

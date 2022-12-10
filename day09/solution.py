@@ -1,7 +1,7 @@
 # AOC 2022 Day 9 https://adventofcode.com/2022/day/0
 import math
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 
 DAY = 9
@@ -83,6 +83,32 @@ def move_head(
         from_coord[0] + (1 * coord_update[0]),
         from_coord[1] + (1 * coord_update[1]),
     )
+    
+    
+def visualize(head, tail, map):
+    map[head] = "H"
+    if not isinstance(tail, list):
+        tail = [tail]
+    for i in range(tail):
+        map(tail[i]) == i
+    print(map)
+    
+    
+def init_map(x, y) -> Dict[int, Dict[int, str]]:
+    map = dict()
+    for i in range(y):
+        for j in range(x):
+            map.update({j: {i: "."}})
+    map[0][0] = "s"
+    return map
+
+
+def print_map(map: Dict[int, Dict[int, str]]) -> None:
+    max_x = max(list(map.keys()))
+    for x, y in map.items():
+        print(map[x][y])
+        if y % max_x == 0:
+            print("")        
 
 
 def solve_pt1(lines: List[str]) -> int:
@@ -100,4 +126,20 @@ def solve_pt1(lines: List[str]) -> int:
 
 
 def solve_pt2(lines: List[str]) -> int:
-    return ""
+    TAIL_LENGTH = 9
+    LAST_KNOT = TAIL_LENGTH - 1
+    h = (0, 0)
+    t = [(0, 0) for i in range(TAIL_LENGTH)]
+
+    tail_spaces = set(list())
+    for x, y, count in parse(lines):
+        update = (x, y)
+        # move in the direction, count spaces, one at a time
+        for _ in range(count):
+            tail_spaces.add(t[LAST_KNOT])
+            h = move_head(h, update)
+            t[0] = move_tail_toward_head(h, t[0])
+            for i in range(1, TAIL_LENGTH):
+                t[i] = move_tail_toward_head(t[i-1], t[i])
+    tail_spaces.add(t[LAST_KNOT])
+    return len(tail_spaces)
