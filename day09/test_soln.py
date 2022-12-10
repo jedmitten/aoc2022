@@ -14,6 +14,7 @@ P3 = (1, 1)
 def sample_input() -> List[int]:
     return soln.read_input(f"~/GitRepos/aoc2022/day{soln.DAY_STR}/test_input.txt")
 
+
 @fixture
 def sample_input2() -> List[int]:
     return soln.read_input(f"~/GitRepos/aoc2022/day{soln.DAY_STR}/test_input_2.txt")
@@ -40,7 +41,6 @@ def test_move_tail_toward_head():
     assert soln.move_tail_toward_head(head, tail) == (3, 4)
 
 
-
 def test_parse(sample_input):
     moves = list(soln.parse(sample_input))
     for x, y, count in moves:
@@ -48,15 +48,15 @@ def test_parse(sample_input):
         assert isinstance(y, int)
         assert isinstance(count, int)
     assert moves[0] == (1, 0, 4)
-    
+
 
 def test_solve_pt1(sample_input):
     assert soln.solve_pt1(sample_input) == 13
-    
+
 
 def test_solve_pt2(sample_input):
     assert soln.solve_pt2(sample_input) == 1
-    
+
 
 def test_solve_pt2_2(sample_input2):
     assert soln.solve_pt2(sample_input2) == 36

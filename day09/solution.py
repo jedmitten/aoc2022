@@ -56,7 +56,9 @@ def distance(p1: Tuple[int, int], p2: Tuple[int, int]) -> int:
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 
-def move_tail_toward_head(head: Tuple[int, int], tail: Tuple[int, int]) -> Tuple[int, int]:
+def move_tail_toward_head(
+    head: Tuple[int, int], tail: Tuple[int, int]
+) -> Tuple[int, int]:
     """
     If p1 is left of p2, return (-1, 0)
        p1 is left and above p2, return (-1, 1)
@@ -64,7 +66,7 @@ def move_tail_toward_head(head: Tuple[int, int], tail: Tuple[int, int]) -> Tuple
     """
     x = y = 0
     if distance(head, tail) > math.sqrt(2):
-        if head[0] < tail[0]:  #left
+        if head[0] < tail[0]:  # left
             x = Direction.Left
         if head[0] > tail[0]:  # right
             x = Direction.Right
@@ -83,8 +85,8 @@ def move_head(
         from_coord[0] + (1 * coord_update[0]),
         from_coord[1] + (1 * coord_update[1]),
     )
-    
-    
+
+
 def visualize(head, tail, map):
     map[head] = "H"
     if not isinstance(tail, list):
@@ -92,8 +94,8 @@ def visualize(head, tail, map):
     for i in range(tail):
         map(tail[i]) == i
     print(map)
-    
-    
+
+
 def init_map(x, y) -> Dict[int, Dict[int, str]]:
     map = dict()
     for i in range(y):
@@ -108,7 +110,7 @@ def print_map(map: Dict[int, Dict[int, str]]) -> None:
     for x, y in map.items():
         print(map[x][y])
         if y % max_x == 0:
-            print("")        
+            print("")
 
 
 def solve_pt1(lines: List[str]) -> int:
@@ -140,6 +142,6 @@ def solve_pt2(lines: List[str]) -> int:
             h = move_head(h, update)
             t[0] = move_tail_toward_head(h, t[0])
             for i in range(1, TAIL_LENGTH):
-                t[i] = move_tail_toward_head(t[i-1], t[i])
+                t[i] = move_tail_toward_head(t[i - 1], t[i])
     tail_spaces.add(t[LAST_KNOT])
     return len(tail_spaces)
