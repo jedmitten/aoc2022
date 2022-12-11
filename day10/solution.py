@@ -18,36 +18,48 @@ class Cpu:
         self._execution_pointer = 0
         self._proceed = True
         self._cycles = []  # this will hold the (addx, X) pairs
-        
+        self.PIXELS_WIDTH = 40
+        self.PIXELS_HEIGHT = 6
+        self._pixels = ["." for i in range(self.PIXELS_WIDTH * self.PIXELS_HEIGHT)]
+
     @property
     def has_instructions(self) -> bool:
         return self._instruction_pointer < len(self._instructions)
-    
+
     @property
     def has_executions(self) -> bool:
         return self._execution_pointer < len(self._executions)
-    
+
     def read_instruction(self) -> Tuple[int, int]:
         ret = self._instructions[self._instruction_pointer]
         self._instruction_pointer += 1
         return ret
-        
+
     def execute_instruction(self) -> Tuple[int, int]:
         ret = self._executions[self._execution_pointer]
         self._execution_pointer += 1
         return ret
-    
+
     def load_instruction(self, v) -> None:
         self._executions.append(v)
-    
+
     def peek_next_execution(self) -> Tuple[int, int]:
         return self._executions[self._execution_pointer]
-     
+
+    def draw(self):
+        char = "."
+        # check 3 "pixel" widths for sprite
+        at = self._clock - math.floor(1.0 * self._clock / self.PIXELS_WIDTH) * (self.PIXELS_WIDTH)
+        sprite = [self._X, self._X - 1, self._X + 1]
+        if at in sprite:
+            char = "#"
+        self._pixels[self._clock] = char
+
     def run_cycles(self):
         while self.has_instructions or self.has_executions:
             if self.has_instructions and self._proceed:
                 # 1. Read instruction. Either ["noop"] or ["addx", "val"]
-                parts = self.read_instruction().split(' ')
+                parts = self.read_instruction().split(" ")
                 # 2. Process instruction
                 if parts[0] == "addx":
                     # set the time this should be executed. addx takes 2 clock cycles
@@ -58,20 +70,24 @@ class Cpu:
                     val = 0
                 # set the value X should be incremented by
                 self.load_instruction((exec_at, val))
-                self._proceed = False  # do not process more instructions until the clock is free
+                self._proceed = (
+                    False  # do not process more instructions until the clock is free
+                )
                 # 3. increment clock
             # keep track of the value of X mid-cycle
             self._cycles.append(self._X)
+            self.draw()
             # 4. execute instructions at the right time
             if self.has_executions:
-                while self.has_executions and self.peek_next_execution()[0] == self._clock:
+                while (
+                    self.has_executions and self.peek_next_execution()[0] == self._clock
+                ):
                     # addx
                     _, val = self.execute_instruction()
                     self._X += val
                     self._proceed = True
             self._clock += 1
 
-                    
     @property
     def interesting_signals(self) -> List[int]:
         cycle_index = 19  # start at 20th cycle
@@ -83,8 +99,15 @@ class Cpu:
             interesting.append(signal)
             cycle_index += 40
         return interesting
-        
-        
+
+    def print_pixels(self):
+        out = ""
+        for i in range(len(self._pixels)):
+            if i % self.PIXELS_WIDTH == 0:
+                out += "\n"
+            out += self._pixels[i]
+        print(out)
+
 
 def read_input(filepath: str) -> List[str]:
     """Read input file and return a list of something"""
@@ -106,7 +129,9 @@ def solve_pt1(lines: List[str]) -> int:
     cpu = parse(lines)
     cpu.run_cycles()
     return sum(cpu.interesting_signals)
-    
+
 
 def solve_pt2(lines: List[str]) -> int:
-    return ""
+    cpu = parse(lines)
+    cpu.run_cycles()
+    cpu.print_pixels()

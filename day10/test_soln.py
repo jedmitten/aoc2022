@@ -14,6 +14,7 @@ P3 = (1, 1)
 def sample_input() -> List[int]:
     return soln.read_input(f"~/GitRepos/aoc2022/day{soln.DAY_STR}/test_input.txt")
 
+
 @fixture
 def sample_input_small() -> List[int]:
     return soln.read_input(f"~/GitRepos/aoc2022/day{soln.DAY_STR}/test_input_small.txt")
@@ -52,5 +53,7 @@ def test_solve_pt1(sample_input):
 #     assert soln.solve_pt2(sample_input) == 1
 
 
-# def test_solve_pt2_2(sample_input2):
-#     assert soln.solve_pt2(sample_input2) == 36
+def test_solve_pt2(sample_input):
+    cpu = soln.parse(sample_input)
+    cpu.run_cycles()
+    cpu.print_pixels()
