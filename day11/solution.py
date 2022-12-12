@@ -15,11 +15,21 @@ class Monkey:
         self.test = None
         self.throw_true = None
         self.throw_false = None
+        self._inspected_items = 0
 
     def inspect_next(self) -> int:
         # get the next item
         worry = self.items.pop(0)
+        self._inspected_items += 1
         return self.perform_operation(worry)
+
+    @property
+    def count_inspected_items(self):
+        return self._inspected_items
+
+    @property
+    def has_items(self):
+        return bool(self.items)
 
     def perform_operation(self, item) -> int:
         """Use the self.operation string to eval math"""
@@ -42,6 +52,12 @@ class Monkey:
         # 4. Perform throw based on test_true
         next_monkey_idx = self.throw_true if test_true else self.throw_false
         return worry, next_monkey_idx
+
+
+def calculate_monkey_business(monkeys: List[Monkey]) -> int:
+    """Find the 2 most active monkeys and multiply their inspected count"""
+    sorted_monkeys = sorted(monkeys, key=lambda x: x.count_inspected_items, reverse=True)
+    return sorted_monkeys[0].count_inspected_items * sorted_monkeys[1].count_inspected_items
 
 
 def read_input(filepath: str) -> List[str]:
@@ -90,14 +106,17 @@ def parse(lines: List[str]) -> List[Monkey]:
 def solve_pt1(lines: List[str]) -> int:
     monkeys = parse(lines)
     # The monkeys take turns inspecting and throwing items
-    i = 0
-    while True:
-        worry, target_monkey_idx = monkeys[0].get_monkey_and_worry()
-        # throw the item
-        target_monkey = monkeys[target_monkey_idx]
-        target_monkey.items.append(worry)
-        # go to next monkey
-        i = (i + 1) % len(monkeys)
+    cur_monkey_idx = 0
+    rounds = 20
+    for i in range(rounds):
+        for monkey in monkeys:
+            while monkey.has_items:
+                worry, target_monkey_idx = monkey.get_monkey_and_worry()
+                # throw the item
+                target_monkey = monkeys[target_monkey_idx]
+                target_monkey.items.append(worry)
+            # go to next monkey
+    return calculate_monkey_business(monkeys)
 
     """
     After each monkey inspects an item but before it tests your worry level,

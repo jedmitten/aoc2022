@@ -28,7 +28,7 @@ def test_monkey(sample_input):
 
 
 def test_solve_pt1(sample_input):
-    assert soln.solve_pt1(sample_input) == 13140
+    assert soln.solve_pt1(sample_input) == 10605
 
 
 def test_solve_pt2(sample_input):
