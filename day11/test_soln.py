@@ -32,4 +32,4 @@ def test_solve_pt1(sample_input):
 
 
 def test_solve_pt2(sample_input):
-    assert soln.solve_pt2(sample_input) == 1
+    assert soln.solve_pt2(sample_input) == 2713310158
