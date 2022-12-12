@@ -56,8 +56,13 @@ class Monkey:
 
 def calculate_monkey_business(monkeys: List[Monkey]) -> int:
     """Find the 2 most active monkeys and multiply their inspected count"""
-    sorted_monkeys = sorted(monkeys, key=lambda x: x.count_inspected_items, reverse=True)
-    return sorted_monkeys[0].count_inspected_items * sorted_monkeys[1].count_inspected_items
+    sorted_monkeys = sorted(
+        monkeys, key=lambda x: x.count_inspected_items, reverse=True
+    )
+    return (
+        sorted_monkeys[0].count_inspected_items
+        * sorted_monkeys[1].count_inspected_items
+    )
 
 
 def read_input(filepath: str) -> List[str]:
@@ -117,13 +122,6 @@ def solve_pt1(lines: List[str]) -> int:
                 target_monkey.items.append(worry)
             # go to next monkey
     return calculate_monkey_business(monkeys)
-
-    """
-    After each monkey inspects an item but before it tests your worry level,
- x  your relief that the monkey's inspection didn't damage the item causes
-    your worry level to be divided by three and rounded down to the nearest
-    integer.
-    """
 
 
 def solve_pt2(lines: List[str]) -> int:
