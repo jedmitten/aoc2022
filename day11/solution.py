@@ -41,28 +41,32 @@ class Monkey:
         # check if number is divisible by self.test
         return not worry % self.test
 
-    def get_monkey_and_worry(self) -> Tuple[int, int]:
+    def get_monkey_and_worry(self, worry_divider: int = 3) -> Tuple[int, int]:
         # 1. Inspect
         worry = self.inspect_next()
         # 2. I settle down
         # Monkey gets bored with item. Worry level is divided by 3 to 500.
-        worry = math.floor(worry / 3)
+        worry = math.floor(worry / worry_divider)
         # 3. Perform operation
         test_true = self.test_worry(worry)
-        """
-        Worry update: resetting worry to manage size of worry
-        Any time the test is true, set the worry to the divisor testing this hypothesis:
-        >>> 19 * 2
-        38
-        >>> 19 * 19
-        361
-        >>> (38 + 4) % 17
-        8
-        >>> (361 + 4) % 17
-        8
-        """
-        if test_true:
-            worry = self.test
+        if worry_divider == 1:  # MANAGE WORRY!!111!!!!!
+            """
+            Worry update: resetting worry to manage size of worry
+            Any time the test is true, set the worry to the divisor testing this hypothesis:
+            >>> 19 * 2
+            38
+            >>> 19 * 19
+            361
+            >>> (38 + 4) % 17
+            8
+            >>> (361 + 4) % 17
+            8
+            
+            Thus true will continue to be true, and false will continue to be false
+            and hopefully will keep the worry level small
+            """
+            if test_true:
+                worry = self.test
         # 4. Perform throw based on test_true
         next_monkey_idx = self.throw_true if test_true else self.throw_false
         return worry, next_monkey_idx
@@ -122,21 +126,30 @@ def parse(lines: List[str]) -> List[Monkey]:
     return monkeys
 
 
+def process_round(monkeys: List[Monkey], worry_divider: int = 3) -> List[Monkey]:
+    for monkey in monkeys:
+        while monkey.has_items:
+            worry, target_monkey_idx = monkey.get_monkey_and_worry(worry_divider=worry_divider)
+            # throw the item
+            target_monkey = monkeys[target_monkey_idx]
+            target_monkey.items.append(worry)
+        # go to next monkey
+    return monkeys
+
+
 def solve_pt1(lines: List[str]) -> int:
     monkeys = parse(lines)
     # The monkeys take turns inspecting and throwing items
-    cur_monkey_idx = 0
     rounds = 20
     for i in range(rounds):
-        for monkey in monkeys:
-            while monkey.has_items:
-                worry, target_monkey_idx = monkey.get_monkey_and_worry()
-                # throw the item
-                target_monkey = monkeys[target_monkey_idx]
-                target_monkey.items.append(worry)
-            # go to next monkey
+        monkeys = process_round(monkeys=monkeys, worry_divider=3)
     return calculate_monkey_business(monkeys)
 
 
 def solve_pt2(lines: List[str]) -> int:
-    return ""
+    monkeys = parse(lines)
+    # The monkeys take turns inspecting and throwing items
+    rounds = 10000
+    for i in range(rounds):
+        monkeys = process_round(monkeys=monkeys, worry_divider=1)
+    return calculate_monkey_business(monkeys)
