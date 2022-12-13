@@ -49,6 +49,20 @@ class Monkey:
         worry = math.floor(worry / 3)
         # 3. Perform operation
         test_true = self.test_worry(worry)
+        """
+        Worry update: resetting worry to manage size of worry
+        Any time the test is true, set the worry to the divisor testing this hypothesis:
+        >>> 19 * 2
+        38
+        >>> 19 * 19
+        361
+        >>> (38 + 4) % 17
+        8
+        >>> (361 + 4) % 17
+        8
+        """
+        if test_true:
+            worry = self.test
         # 4. Perform throw based on test_true
         next_monkey_idx = self.throw_true if test_true else self.throw_false
         return worry, next_monkey_idx
